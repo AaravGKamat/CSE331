@@ -54,6 +54,8 @@ class Solution:
 
         result.append(sum)
 
+        # each row has the first few entries zeroed out
+        # since we have the final sum, just subtract the entries whose indexes are zeroed out
         sub = self.in_vector[0]
         for i in range(1, length):
             num = result[0] - sub
