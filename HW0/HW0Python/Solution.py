@@ -34,3 +34,25 @@ class Solution:
             result.append(num)
 
         return result
+
+
+def column_create(ones, rows):
+    result = []
+    for i in range(0, rows):
+        if (ones > 0):
+            result.append(1)
+        else:
+            result.append(0)
+        ones = ones-1
+    return result
+
+
+def row_create(zeroes, rows):
+    result = []
+    for i in range(0, rows):
+        if (zeroes > 0):
+            result.append(0)
+        else:
+            result.append(1)
+        zeroes = zeroes-1
+    return result
