@@ -38,8 +38,49 @@ class Solution:
             first = False
             print(matching_list)
 
+    def generate_matches2(self):
+        # list of all possible matchings
+        result = []
+        matching_list = []
+        match_list = []
+        men_list = list(self.men.keys())
+        print(self.men[men_list[0]][0])
+        taken = []
+        match_list = []
+        for j in range(0, len(men_list)):
+            for i in range(0, 3):
+                anchor_match = Marriage(men_list[j], self.men[men_list[j]][i])
+                match_list.append(anchor_match)
+                taken.append(self.men[men_list[j]][i])
+                for man in self.men:
+
+                    if (man != anchor_match.man()):
+                        for woman in self.men[man]:
+                            if woman not in taken:
+                                match = Marriage(man, woman)
+                                taken.append(woman)
+                                match_list.append(match)
+                                break
+
+                    else:
+                        continue
+
+                matching_list.append(match_list)
+                match_list = []
+                taken = []
+
+            print(matching_list)
+            result.append(matching_list)
+            matching_list = []
+        print(result)
+        return result
+
     def output_stable_matchings(self):
-        self.generate_matches()
+        result = self.generate_matches2()
+        for matching_list in result:
+            for list in matching_list:
+                for match in list:
+                    i = 1
 
         """
         This method both computes and returns the stable matchings
