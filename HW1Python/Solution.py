@@ -109,18 +109,21 @@ class Solution:
             for match in matchlist:
                 finder[match.man()] = match.woman()
 
+            end = False
             for match in matchlist:
+                if end == False:
+                    # get the preference list of the specific woman
+                    wlist = self.women[match.woman()]
+                    # if the man she is currently matched to is not her most preferred,
+                    # go through her preference list to check for blocking pairs
+                    if (wlist[0] != match.man()):
+                        for i in range(0, wlist.index(match.man())):
 
-                # get the preference list of the specific woman
-                wlist = self.women[match.woman()]
-                # if the man she is currently matched to is not her most preferred,
-                # go through her preference list to check for blocking pairs
-                if (wlist[0] != match.man()):
-                    for i in range(0, wlist.index(match.man())):
-
-                        mlist = self.men[wlist[i]]
-                        if (mlist.index(match.woman()) < mlist.index(finder[wlist[i]])):
-                            remove.append(matchlist)
+                            mlist = self.men[wlist[i]]
+                            if (mlist.index(match.woman()) < mlist.index(finder[wlist[i]])):
+                                remove.append(matchlist)
+                                end = True
+                                break
 
         for i in remove:
             if (i in matching_list):
