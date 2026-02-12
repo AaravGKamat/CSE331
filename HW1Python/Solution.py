@@ -45,29 +45,39 @@ class Solution:
         match_list = []
         men_list = list(self.men.keys())
         print(self.men[men_list[0]][0])
-        taken = []
+        taken = {}
         match_list = []
-        for j in range(0, len(men_list)):
-            for i in range(0, 3):
-                anchor_match = Marriage(men_list[j], self.men[men_list[j]][i])
+        for man in men_list:
+            for i in range(0, len(men_list)):
+                anchor_match = Marriage(man, self.men[man][i])
                 match_list.append(anchor_match)
-                taken.append(self.men[men_list[j]][i])
+                taken[man] = (self.men[man][i])
+                print(taken)
                 for man in self.men:
 
                     if (man != anchor_match.man()):
                         for woman in self.men[man]:
-                            if woman not in taken:
+                            if woman not in taken.values():
                                 match = Marriage(man, woman)
-                                taken.append(woman)
+                                taken[man] = (woman)
                                 match_list.append(match)
                                 break
+                            # else:
+                            #     matcher = 1
+                            #     for i in taken.keys():
+                            #         if taken[i] == woman:
+                            #             matcher = taken[i]
+                            #     if (self.men[man].index(woman) < self.men[matcher].index(woman)):
+                            #         match = Marriage(man, woman)
+                            #         taken[man] = (woman)
+                            #         match_list.append(match)
 
                     else:
                         continue
 
                 matching_list.append(match_list)
                 match_list = []
-                taken = []
+                taken = {}
 
             print(matching_list)
             result.append(matching_list)
@@ -76,12 +86,45 @@ class Solution:
         return result
 
     def output_stable_matchings(self):
-        result = self.generate_matches2()
-        for matching_list in result:
-            for list in matching_list:
-                for match in list:
-                    i = 1
 
+        result = self.generate_matches2()
+        print("result")
+        print(result)
+        print("\n")
+        remove = []
+        for matching_list in result:
+
+            for matchlist in matching_list:
+
+                finder = {}
+                for match in matchlist:
+                    finder[match.man()] = match.woman()
+                for match in matchlist:
+
+                    wlist = self.women[match.woman()]
+                    if (wlist[0] != match.man()):
+                        for i in range(0, wlist.index(match.man())):
+
+                            mlist = self.men[wlist[i]]
+                            if (mlist.index(match.woman()) < mlist.index(finder[wlist[i]])):
+                                remove.append(matchlist)
+
+        for matching_list in result:
+            for i in remove:
+                if (i in matching_list):
+                    matching_list.remove(i)
+
+        final = []
+        for i in result:
+            for j in i:
+                if sorted(j) not in final:
+                    final.append(sorted(j))
+        print("\n")
+        print(final)
+        # for each match, check woman's preference list
+        # see if she ranks any man higher,
+        # if yes, for every man ranked higher, check their preference list
+        # if they rank woman above current match, blocking pair
         """
         This method both computes and returns the stable matchings
         :return: the list of stable matchings
