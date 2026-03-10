@@ -1,4 +1,5 @@
 from collections import deque
+import numpy as np
 
 
 class Solution:
@@ -9,52 +10,34 @@ class Solution:
 
     def output_distances(self):
         # maps node to its level/distance from start node
-        visited = {}
+        visited = []
         queue = deque()
-        # edgeTo = []
-        edgeTo = {}
         queue.append(self.start_node)
         level = 0
         leveler = {}
-        visited[self.start_node] = level
-        # map every level to all the nodes it has, make sure no duplicates
-        while (len(queue) != 0):
-
-            current = queue.popleft()
+        leveler[level] = [self.start_node]
+        while len(leveler[level]) != 0:
+            next = []
+            for node in leveler[level]:
+                for edge in self.graph.get(node):
+                    if edge not in visited:
+                        visited.append(edge)
+                        next.append(edge)
 
             level += 1
-            for neighbor in self.graph.get(current):
+            leveler[level] = next
 
-                if neighbor not in visited:
-                    visited[neighbor] = level
-                    edgeTo[neighbor] = current
-                    # edgeTo.append((neighbor, current))
-                    queue.append(neighbor)
+        result = np.empty(len(self.graph))
+        for distance in leveler.keys():
+            nodes = leveler[distance]
+            for node in nodes:
+                result[node] = distance
 
-            for i in queue:
-                if i not in leveler:
-                    leveler[i] = level
+        result = result.astype(int).tolist()
 
-        distances = []
-        for key in sorted(visited.keys()):
-
-            distances.append(visited[key])
-
-        print("\n")
-        print(leveler)
-
-        # for key in edgeTo:
-        #     i = 0
-        #     if key == self.start_node:
-        #         distances[self.start_node] = 0
-        #     else:
-        #         current = key
-        #         while (key != self.start_node):
-        #             current = edgeTo[key]
-        #             i += 1
-        #     distances[key] = 1
+        # map every level to all the nodes it has, make sure no duplicates
 
         """
         :return: the list of minimum distances from each node to the start node
         """
-        return distances
+        return result
