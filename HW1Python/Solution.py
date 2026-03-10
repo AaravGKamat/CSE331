@@ -85,42 +85,52 @@ class Solution:
         print(result)
         return result
 
+    def generate_matches3(self):
+        total_matchings = []
+        woman_permuted = permutations(self.women)
+        for permutation in woman_permuted:
+            match_list = []
+            i = 0
+            for man in self.men:
+                match = Marriage(man, permutation[i])
+                i += 1
+                match_list.append(match)
+
+            total_matchings.append(match_list)
+
+        return total_matchings
+
     def output_stable_matchings(self):
 
-        result = self.generate_matches2()
-        print("result")
-        print(result)
-        print("\n")
+        matching_list = self.generate_matches3()
         remove = []
-        for matching_list in result:
+        for matchlist in matching_list:
+            finder = {}
+            for match in matchlist:
+                finder[match.man()] = match.woman()
 
-            for matchlist in matching_list:
-
-                finder = {}
-                for match in matchlist:
-                    finder[match.man()] = match.woman()
-                for match in matchlist:
-
+            end = False
+            for match in matchlist:
+                if end == False:
+                    # get the preference list of the specific woman
                     wlist = self.women[match.woman()]
+                    # if the man she is currently matched to is not her most preferred,
+                    # go through her preference list to check for blocking pairs
                     if (wlist[0] != match.man()):
                         for i in range(0, wlist.index(match.man())):
 
                             mlist = self.men[wlist[i]]
                             if (mlist.index(match.woman()) < mlist.index(finder[wlist[i]])):
                                 remove.append(matchlist)
+                                end = True
+                                break
 
-        for matching_list in result:
-            for i in remove:
-                if (i in matching_list):
-                    matching_list.remove(i)
+        for i in remove:
+            if (i in matching_list):
+                matching_list.remove(i)
 
-        final = []
-        for i in result:
-            for j in i:
-                if sorted(j) not in final:
-                    final.append(sorted(j))
-        print("\n")
-        print(final)
+        return matching_list
+
         # for each match, check woman's preference list
         # see if she ranks any man higher,
         # if yes, for every man ranked higher, check their preference list
