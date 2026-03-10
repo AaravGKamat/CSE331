@@ -1,6 +1,8 @@
 from collections import deque
 import numpy as np
 
+# CITE TB BFS
+
 
 class Solution:
 
@@ -10,34 +12,43 @@ class Solution:
 
     def output_distances(self):
         # maps node to its level/distance from start node
+        # print(self.graph)
+        # list of visited nodes
         visited = []
-        queue = deque()
-        queue.append(self.start_node)
+        # the level if the node, ie its distance from the start node in terms of edges
         level = 0
-        leveler = {}
-        leveler[level] = [self.start_node]
-        while len(leveler[level]) != 0:
-            next = []
-            for node in leveler[level]:
-                for edge in self.graph.get(node):
-                    if edge not in visited:
-                        visited.append(edge)
-                        next.append(edge)
+        # a dictionary from level:list of nodes, keeping track of the number of nodes in each level
+        level_nodes = {}
+        level_nodes[level] = [self.start_node]
+        # the final list, where the index denotes the node, and the value at the index denotes its distance from the start node
+        distance = np.empty(len(self.graph))
+        distance[self.start_node] = level
+        visited.append(self.start_node)
+        # the loop continues until all nodes are explored, in which case the list of nodes at that level will be empty
+        while len(level_nodes[level]) != 0:
+            next_level = []
+            # explore all edges incident to a node
+            for node in level_nodes[level]:
+                for neighbor in self.graph.get(node):
+                    if neighbor not in visited:
+                        visited.append(neighbor)
+                        next_level.append(neighbor)
+                        distance[neighbor] = level + 1
 
             level += 1
-            leveler[level] = next
+            level_nodes[level] = next_level
 
-        result = np.empty(len(self.graph))
-        for distance in leveler.keys():
-            nodes = leveler[distance]
-            for node in nodes:
-                result[node] = distance
-
-        result = result.astype(int).tolist()
+        # convert numpy list to python list
+        distance = distance.astype(int).tolist()
+        # all unvisited nodes are not part of the BFS spanning tree
+        for node in self.graph:
+            if node not in visited:
+                distance[node] = -1
+        # print(result)
 
         # map every level to all the nodes it has, make sure no duplicates
 
         """
         :return: the list of minimum distances from each node to the start node
         """
-        return result
+        return distance
