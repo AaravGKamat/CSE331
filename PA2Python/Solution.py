@@ -5,7 +5,8 @@ class Solution:
         self.graph = graph
 
     def output_distances(self):
+        "e"
         """
         :return: the list of minimum distances from each node to the start node
         """
-        return [] #Return empty
+        return []  # Return empty
