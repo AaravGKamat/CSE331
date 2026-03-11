@@ -14,7 +14,7 @@ class Solution:
         # # maps node to its level/distance from start node
         # # print(self.graph)
         # # list of visited nodes
-        # visited = []
+        # visited = set()
         # # the level if the node, ie its distance from the start node in terms of edges
         # level = 0
         # # a dictionary from level:list of nodes, keeping track of the number of nodes in each level
@@ -23,7 +23,7 @@ class Solution:
         # # the final list, where the index denotes the node, and the value at the index denotes its distance from the start node
         # distance = np.empty(len(self.graph))
         # distance[self.start_node] = level
-        # visited.append(self.start_node)
+        # visited.add(self.start_node)
         # # the loop continues until all nodes are explored, in which case the list of nodes at that level will be empty
         # while len(level_nodes[level]) != 0:
         #     next_level = []
@@ -31,7 +31,7 @@ class Solution:
         #     for node in level_nodes[level]:
         #         for neighbor in self.graph.get(node):
         #             if neighbor not in visited:
-        #                 visited.append(neighbor)
+        #                 visited.add(neighbor)
         #                 next_level.append(neighbor)
         #                 distance[neighbor] = level + 1
 
@@ -52,22 +52,22 @@ class Solution:
         # :return: the list of minimum distances from each node to the start node
         # """
         # return distance
-        a = self.extra()
-        return a
+        distances = self.distance_BFS()
+        return distances
 
-    def extra(self):
+    def distance_BFS(self):
 
         # maps node to its level/distance from start node
-        visited = []
+        visited = set()
         # the level if the node, ie its distance from the start node in terms of edges
         level = 0
-        # a dictionary from level:list of nodes, keeping track of the number of nodes in each level
+        # a dictionary from node:its level, ie distance from start node
         level_nodes = {}
         level_nodes[self.start_node] = level
         # the final list, where the index denotes the node, and the value at the index denotes its distance from the start node
         distance = np.empty(len(self.graph))
         distance[self.start_node] = level
-        visited.append(self.start_node)
+        visited.add(self.start_node)
 
         queue = deque()
         queue.append(self.start_node)
@@ -86,20 +86,26 @@ class Solution:
                 queue.append(-1)
                 level += 1
 
+            # regular BFS with a minor change:
+            # start node is level 0, its neighbors form level 1; we enqueue -1 to indicate end of a level
+            # every time -1 is encountered, that is the end of the level, and we enqueue it again to signal the next level
+
             else:
                 for neighbor in self.graph.get(current):
 
                     if (neighbor not in visited):
-                        visited.append(neighbor)
+                        visited.add(neighbor)
 
                         queue.append(neighbor)
 
                 if current == self.start_node:
                     queue.append(-1)
 
+        # go through the sorted list of nodes and assign their indices in the final list to their level
         for key in sorted(level_nodes.keys()):
             distance[key] = level_nodes[key]
 
+        # every node not part of the spanning tree has a distance of -1 from the start
         for node in self.graph:
             if node not in visited:
                 distance[node] = -1
