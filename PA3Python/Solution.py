@@ -22,29 +22,56 @@ class Solution:
             return self.weight < other.weight
 
     def output_edges(self):
+        starte = time.perf_counter()
         min_edges = [-1]*len(self.graph)
         # set of visited nodes
         visited = set()
         min_heap = []
-        start = self.HeapQElement(-1, 0, 0)
+        # (weight, parent, start)
+        start = (0, -1, 0)
         heapq.heappush(min_heap, start)
         while min_heap:
-            final_min_edge = None
             current = heapq.heappop(min_heap)
-            parent = current.child
+            parent = current[2]
             if (parent not in visited):
                 visited.add(parent)
-                for i in range(0, len(self.graph)):
-                    if (i not in visited and self.graph[parent][i] != -1):
-                        new_elem = self.HeapQElement(
-                            parent, i, self.graph[parent][i])
+                row = self.graph[parent]
+                for i in range(0, len(row)):
+                    edge_weight = row[i]
+                    if (i not in visited and edge_weight != -1):
+                        new_elem = (
+                            edge_weight, parent, i)
                         heapq.heappush(min_heap, new_elem)
 
-                if (current.parent != -1):
-                    min_edges[current.child] = current.parent
-            # (0,1,2)
+                if (current[1] != -1):
+                    min_edges[current[2]] = current[1]
 
+        print(time.perf_counter() - starte)
         return min_edges
+    # def output_edges(self):
+
+    #     min_edges = [-1]*len(self.graph)
+    #     # set of visited nodes
+    #     visited = set()
+    #     min_heap = []
+    #     start = self.HeapQElement(-1, 0, 0)
+    #     heapq.heappush(min_heap, start)
+    #     while min_heap:
+    #         current = heapq.heappop(min_heap)
+    #         parent = current.child
+    #         if (parent not in visited):
+    #             visited.add(parent)
+    #             for i in range(0, len(self.graph)):
+    #                 edge_weight = self.graph[parent][i]
+    #                 if (i not in visited and edge_weight != -1):
+    #                     new_elem = self.HeapQElement(
+    #                         parent, i, edge_weight)
+    #                     heapq.heappush(min_heap, new_elem)
+
+    #             if (current.parent != -1):
+    #                 min_edges[current.child] = current.parent
+
+    #     return min_edges
 
     def output_edges2(self):
         # creates list with every index = -1
