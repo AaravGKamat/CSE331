@@ -22,6 +22,49 @@ class Solution:
         min_edge_node = {}
 
         while len(visited) != len(self.graph):
+            i = 0
+
+            for x in range(0, len(self.graph)):
+                if (x not in visited):
+                    i = x
+                    break
+                    
+            for j in visited:
+                        current_node = j
+                        current_weight = self.graph[current_node][i]
+                        if (current_weight != -1):
+                            if (min_edge[2] == None):
+                                min_edge = (current_node, i, current_weight)
+                            else:
+                                if (current_weight < min_edge[2]):
+                                    min_edge = (current_node, i,
+                                                current_weight)
+
+            if (min_edge[1] != None):
+                # set parent in result
+                min_edges[min_edge[1]] = min_edge[0]
+                visited.add(min_edge[1])
+                min_edge = (None, None, None)
+
+            # disconected graph
+            else:
+                break
+
+        return min_edges
+
+
+    def output_edges2(self):
+        # creates list with every index = -1
+        min_edges = [-1]*len(self.graph)
+        visited = set()
+        visited.add(0)
+        i = 0
+        min_edge = (None, None, None)
+        current_node = 0
+        # find min edge for node, and maintain visited dictionary
+        min_edge_node = {}
+
+        while len(visited) != len(self.graph):
             for i in range(0, len(self.graph)):
                 if (i not in visited):
                     for j in visited:
