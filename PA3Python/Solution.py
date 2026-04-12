@@ -11,42 +11,42 @@ class Solution:
     def __init__(self, graph):
         self.graph = graph
 
-    class HeapQElement:
-        def __init__(self, parent, child, weight):
-            self.parent = parent
-            self.child = child
-            self.weight = weight
+    # class HeapQElement:
+    #     def __init__(self, parent, child, weight):
+    #         self.parent = parent
+    #         self.child = child
+    #         self.weight = weight
 
-        # Overloading operator for minheap
-        def __lt__(self, other):
-            return self.weight < other.weight
+    #     # Overloading operator for minheap
+    #     def __lt__(self, other):
+    #         return self.weight < other.weight
 
     def output_edges(self):
-        starte = time.perf_counter()
-        min_edges = [-1]*len(self.graph)
+        # starte = time.perf_counter()
+        length = len(self.graph)
+        min_edges = [-1]*length
         # set of visited nodes
         visited = set()
         min_heap = []
         # (weight, parent, start)
         start = (0, -1, 0)
         heapq.heappush(min_heap, start)
-        while min_heap:
+        while (len(visited) < length):
             current = heapq.heappop(min_heap)
             parent = current[2]
             if (parent not in visited):
                 visited.add(parent)
                 row = self.graph[parent]
-                for i in range(0, len(row)):
+                for i in range(0, length):
                     edge_weight = row[i]
                     if (i not in visited and edge_weight != -1):
-                        new_elem = (
-                            edge_weight, parent, i)
+                        new_elem = (edge_weight, parent, i)
                         heapq.heappush(min_heap, new_elem)
 
                 if (current[1] != -1):
                     min_edges[current[2]] = current[1]
 
-        print(time.perf_counter() - starte)
+        # print(time.perf_counter() - starte)
         return min_edges
     # def output_edges(self):
 
@@ -73,41 +73,41 @@ class Solution:
 
     #     return min_edges
 
-    def output_edges2(self):
-        # creates list with every index = -1
-        min_edges = [-1]*len(self.graph)
-        # set of visited nodes
-        visited = set()
-        visited.add(0)
-        # minimum edge maintained as tuple
-        min_edge = (None, None, None)
-        current_node = 0
+    # def output_edges2(self):
+    #     # creates list with every index = -1
+    #     min_edges = [-1]*len(self.graph)
+    #     # set of visited nodes
+    #     visited = set()
+    #     visited.add(0)
+    #     # minimum edge maintained as tuple
+    #     min_edge = (None, None, None)
+    #     current_node = 0
 
-        while len(visited) != len(self.graph):
-            for i in range(0, len(self.graph)):
-                if (i not in visited):
-                    for j in visited:
-                        current_node = j
-                        current_weight = self.graph[current_node][i]
-                        if (current_weight != -1):
-                            if (min_edge[2] == None):
-                                min_edge = (current_node, i, current_weight)
-                            else:
-                                if (current_weight < min_edge[2]):
-                                    min_edge = (current_node, i,
-                                                current_weight)
+    #     while len(visited) != len(self.graph):
+    #         for i in range(0, len(self.graph)):
+    #             if (i not in visited):
+    #                 for j in visited:
+    #                     current_node = j
+    #                     current_weight = self.graph[current_node][i]
+    #                     if (current_weight != -1):
+    #                         if (min_edge[2] == None):
+    #                             min_edge = (current_node, i, current_weight)
+    #                         else:
+    #                             if (current_weight < min_edge[2]):
+    #                                 min_edge = (current_node, i,
+    #                                             current_weight)
 
-            if (min_edge[1] != None):
-                # set parent in result
-                min_edges[min_edge[1]] = min_edge[0]
-                visited.add(min_edge[1])
-                min_edge = (None, None, None)
+    #         if (min_edge[1] != None):
+    #             # set parent in result
+    #             min_edges[min_edge[1]] = min_edge[0]
+    #             visited.add(min_edge[1])
+    #             min_edge = (None, None, None)
 
-            # disconected graph
-            else:
-                break
+    #         # disconected graph
+    #         else:
+    #             break
 
-        return min_edges
+    #     return min_edges
 
     # def output_edges(self):
     #     # creates list with every index = -1
@@ -181,4 +181,4 @@ class Solution:
     #                 if (i not in queue):
     #                     queue.add(i)
         ########### Output the node ids of the smallest weighted path ############
-        return min_edges
+        # return min_edges
