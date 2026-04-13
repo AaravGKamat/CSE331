@@ -28,10 +28,14 @@ class Solution:
         # set of visited nodes
         visited = set()
         min_heap = []
+        max = {}
         # (weight, parent, start)
         start = (0, -1, 0)
+        max[0] = 0
         heapq.heappush(min_heap, start)
         while (len(visited) < length):
+            if (not min_heap):
+                break
             current = heapq.heappop(min_heap)
             parent = current[2]
             if (parent not in visited):
@@ -40,8 +44,10 @@ class Solution:
                 for i in range(0, length):
                     edge_weight = row[i]
                     if (i not in visited and edge_weight != -1):
-                        new_elem = (edge_weight, parent, i)
-                        heapq.heappush(min_heap, new_elem)
+                        if (max.get(i) == None or edge_weight < max[i]):
+                            new_elem = (edge_weight, parent, i)
+                            max[i] = edge_weight
+                            heapq.heappush(min_heap, new_elem)
 
                 if (current[1] != -1):
                     min_edges[current[2]] = current[1]
