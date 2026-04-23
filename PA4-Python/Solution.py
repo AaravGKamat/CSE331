@@ -8,13 +8,12 @@ class Solution:
         self.points = points
 
     class PointElement:
-        # I negatve because maxheap is not implemented in Autograder's version of Python
         def __init__(self, x, y):
             self.id = id
             self.x = x
             self.y = y
 
-        # Overloading operator for minheap
+        # Overloading operator
         def __lt__(self, other):
             if (self.y != other.y):
                 return self.y < other.y
@@ -46,19 +45,41 @@ class Solution:
             range_x = [sorted_point_list[midpoint].x - min_dist,
                        sorted_point_list[midpoint].x + min_dist]
             strip_points = []
+            length = 0
             for point in sorted_point_list:
                 if point.x >= range_x[0] and point.x <= range_x[1]:
                     strip_points.append(point)
+                    length += 1
             strip_points = sorted(strip_points, key=attrgetter("y", "x"))
             # brute force compare each point to the next 7 points
-            true_min = 0
+            true_min = min_dist
+            done = set()
+
+            # leng = 15
+            # if (length < 15):
+            #     leng = length
+            # for i in range(0, leng):
+            #     for j in range(0, leng):
+            #         if (i+j < leng):
+            #             point1 = strip_points[i]
+            #             point2 = strip_points[i+j]
+            #             if (point1 != point2 and abs(point1.y - point2.y) <= min_dist):
+            #                 distance = (math.dist([point1.x, point1.y], [
+            #                     point2.x, point2.y]))
+            #                 if (distance < true_min):
+            #                     true_min = distance
+            #                 done.add((point1, point2))
+
             for point1 in strip_points:
                 for point2 in strip_points:
-                    if (point1 != point2 and abs(point1.y - point2.y) <= min_dist):
+                    if (abs(point1.y - point2.y) >= min_dist):
+                        break
+                    if (point1 != point2):
                         distance = (math.dist([point1.x, point1.y], [
                             point2.x, point2.y]))
                         if (true_min == 0 or distance < true_min):
                             true_min = distance
+                        done.add((point1, point2))
 
             if (true_min == 0):
                 true_min = min_dist
@@ -66,12 +87,13 @@ class Solution:
 
     def findClosestPair(self):
         # create a new list containing points as PointElement objects
-        new_list = []
-        for point in self.points:
-            new_point = self.PointElement(point[0], point[1])
-            new_list.append(new_point)
+
+        for i in range(0, len(self.points)):
+            self.points[i] = self.PointElement(
+                self.points[i][0], self.points[i][1])
+
         # sort the points based on x coordinates and break clashes based on y coordinates
-        sort_by_x = (sorted(new_list, key=attrgetter("x", "y")))
+        sort_by_x = (sorted(self.points, key=attrgetter("x", "y")))
         # for pt in sort_by_x:
         #     print("Point = (%d,%d)" % (pt.x, pt.y))
 
