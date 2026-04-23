@@ -72,7 +72,7 @@ class Solution:
             new_list.append(new_point)
         # sort the points based on x coordinates and break clashes based on y coordinates
         sort_by_x = (sorted(new_list, key=attrgetter("x", "y")))
-        for pt in sort_by_x:
-            print("Point = (%d,%d)" % (pt.x, pt.y))
+        # for pt in sort_by_x:
+        #     print("Point = (%d,%d)" % (pt.x, pt.y))
 
         return self.findClosestPairHelper(sort_by_x)
